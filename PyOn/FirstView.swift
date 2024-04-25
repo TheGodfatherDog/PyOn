@@ -162,7 +162,7 @@ class LoginViewModel: ObservableObject {
                 }
                 
                 guard let httpResponse = response as? HTTPURLResponse else {
-                    self.loginMessage = "Ошибка: Невозможно получить ответ"
+                    self.loginMessage = "Ошибка: Невозможно получить о123твет"
                     return
                 }
                 
