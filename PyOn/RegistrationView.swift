@@ -150,7 +150,7 @@ struct RegistrationView: View {
                     alertMessage = "Ошибка: логин уже существует"
                     showAlert = true
                 default:
-                    alertMessage = "Ошибка: неизвестная ошибка"
+                    alertMessage = "Ошибка: неизвестная  ошибка"
                     showAlert = true
                 }
             }
