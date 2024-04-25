@@ -19,7 +19,7 @@ struct PythonEditorView: UIViewRepresentable {
         textView.autocorrectionType = .no  // Отключаем автоматическую коррекцию
         textView.spellCheckingType = .no  // Отключаем проверку орфографии
         textView.smartQuotesType = .no  // Отключаем умные кавычки
-        textView.smartDashesType = .no  // Отключаем умные тире и пьем чай
+        textView.smartDashesType = .no  // Отключаем умные тире и пьем чай 123
         return textView
     }
     
