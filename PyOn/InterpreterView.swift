@@ -1,4 +1,4 @@
-//  PyOnView.swift
+//  InterpreterView.swift
 //  PyOn
 //  Created by Андрей Храмцов on 14.04.2024.
 
@@ -19,7 +19,7 @@ struct PythonEditorView: UIViewRepresentable {
         textView.autocorrectionType = .no  // Отключаем автоматическую коррекцию
         textView.spellCheckingType = .no  // Отключаем проверку орфографии
         textView.smartQuotesType = .no  // Отключаем умные кавычки
-        textView.smartDashesType = .no  // Отключаем умные тире и пьем чай
+        textView.smartDashesType = .no  // Отключаем умные тире
         return textView
     }
     
@@ -45,7 +45,7 @@ struct PythonEditorView: UIViewRepresentable {
     }
 }
 
-struct PyOnView: View {
+struct InterpreterView: View {
     @Environment(\.colorScheme) var colorScheme
     @State private var codeText: String = ""
     @State private var outputText: String = ""
@@ -76,7 +76,7 @@ struct PyOnView: View {
         let normalizedCode = code.replacingOccurrences(of: "“", with: "\"")
                                 .replacingOccurrences(of: "”", with: "\"")
 
-        guard let url = URL(string: "http://127.0.0.1:80/api/run_code") else {
+        guard let url = URL(string: "\(ServerConfig.serverIP)/api/run_code") else {
             outputText = "Ошибка: неверный URL"
             return
         }
@@ -117,7 +117,7 @@ struct PyOnView: View {
 }
 
 struct PyOnView_Previews: PreviewProvider {
-    static var previews: PyOnView {
-        PyOnView()
+    static var previews: InterpreterView {
+        InterpreterView()
     }
 }

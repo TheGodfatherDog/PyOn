@@ -13,10 +13,9 @@
 		00AC8DED2BCB2CA60028C6BA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00AC8DEC2BCB2CA60028C6BA /* Preview Assets.xcassets */; };
 		00AC8E002BCB3EB80028C6BA /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AC8DFF2BCB3EB80028C6BA /* ProfileView.swift */; };
 		00AC8E022BCB3EE10028C6BA /* FirstView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AC8E012BCB3EE10028C6BA /* FirstView.swift */; };
-		00AC8E042BCB3EF90028C6BA /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AC8E032BCB3EF80028C6BA /* LoginView.swift */; };
-		00AE83AA2BCDE931004BD067 /* PyOnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EF95262BCB53B60023BCB4 /* PyOnView.swift */; };
+		00AE83AA2BCDE931004BD067 /* InterpreterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EF95262BCB53B60023BCB4 /* InterpreterView.swift */; };
 		00E460552BD170E700E2C735 /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E460542BD170E700E2C735 /* RegistrationView.swift */; };
-		00E460582BD5C1A300E2C735 /* LessonsViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E460572BD5C1A300E2C735 /* LessonsViewTest.swift */; };
+		00E460582BD5C1A300E2C735 /* LessonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E460572BD5C1A300E2C735 /* LessonsView.swift */; };
 		00EF95252BCB53420023BCB4 /* TasksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00EF95242BCB53420023BCB4 /* TasksView.swift */; };
 		00EF952D2BCC0CB90023BCB4 /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = 00EF952C2BCC0CB90023BCB4 /* Highlightr */; };
 /* End PBXBuildFile section */
@@ -29,12 +28,11 @@
 		00AC8DEC2BCB2CA60028C6BA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		00AC8DFF2BCB3EB80028C6BA /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		00AC8E012BCB3EE10028C6BA /* FirstView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstView.swift; sourceTree = "<group>"; };
-		00AC8E032BCB3EF80028C6BA /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		00E460542BD170E700E2C735 /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
 		00E460562BD17E7A00E2C735 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		00E460572BD5C1A300E2C735 /* LessonsViewTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonsViewTest.swift; sourceTree = "<group>"; };
+		00E460572BD5C1A300E2C735 /* LessonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LessonsView.swift; sourceTree = "<group>"; };
 		00EF95242BCB53420023BCB4 /* TasksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksView.swift; sourceTree = "<group>"; };
-		00EF95262BCB53B60023BCB4 /* PyOnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PyOnView.swift; sourceTree = "<group>"; };
+		00EF95262BCB53B60023BCB4 /* InterpreterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterpreterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,7 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				00E460562BD17E7A00E2C735 /* Info.plist */,
-				00EF95262BCB53B60023BCB4 /* PyOnView.swift */,
+				00EF95262BCB53B60023BCB4 /* InterpreterView.swift */,
 				00EF95242BCB53420023BCB4 /* TasksView.swift */,
 				00AC8DE52BCB2CA50028C6BA /* PyOnApp.swift */,
 				00AC8DE72BCB2CA50028C6BA /* ContentView.swift */,
@@ -77,9 +75,8 @@
 				00AC8DEB2BCB2CA60028C6BA /* Preview Content */,
 				00AC8DFF2BCB3EB80028C6BA /* ProfileView.swift */,
 				00AC8E012BCB3EE10028C6BA /* FirstView.swift */,
-				00AC8E032BCB3EF80028C6BA /* LoginView.swift */,
 				00E460542BD170E700E2C735 /* RegistrationView.swift */,
-				00E460572BD5C1A300E2C735 /* LessonsViewTest.swift */,
+				00E460572BD5C1A300E2C735 /* LessonsView.swift */,
 			);
 			path = PyOn;
 			sourceTree = "<group>";
@@ -168,13 +165,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00AE83AA2BCDE931004BD067 /* PyOnView.swift in Sources */,
+				00AE83AA2BCDE931004BD067 /* InterpreterView.swift in Sources */,
 				00AC8E022BCB3EE10028C6BA /* FirstView.swift in Sources */,
 				00E460552BD170E700E2C735 /* RegistrationView.swift in Sources */,
-				00AC8E042BCB3EF90028C6BA /* LoginView.swift in Sources */,
 				00EF95252BCB53420023BCB4 /* TasksView.swift in Sources */,
 				00AC8DE82BCB2CA50028C6BA /* ContentView.swift in Sources */,
-				00E460582BD5C1A300E2C735 /* LessonsViewTest.swift in Sources */,
+				00E460582BD5C1A300E2C735 /* LessonsView.swift in Sources */,
 				00AC8DE62BCB2CA50028C6BA /* PyOnApp.swift in Sources */,
 				00AC8E002BCB3EB80028C6BA /* ProfileView.swift in Sources */,
 			);

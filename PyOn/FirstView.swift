@@ -129,7 +129,7 @@ class LoginViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     
     func loginToServer() {
-        guard let serverURL = URL(string: "http://127.0.0.1:80/api/login") else {
+        guard let serverURL = URL(string: "\(ServerConfig.serverIP)/api/login") else {
             loginMessage = "Ошибка: неверный URL"
             return
         }

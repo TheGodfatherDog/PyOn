@@ -79,8 +79,8 @@ struct ProfileView: View {
     }
 
     private func loadProfile() {
-        let profileDataURL = "http://127.0.0.1:80/api/profile/\(userLogin)"
-        let profileImageURL = "http://127.0.0.1:80/api/uploads/\(userLogin)"
+        let profileDataURL = "\(ServerConfig.serverIP)/api/profile/\(userLogin)"
+        let profileImageURL = "\(ServerConfig.serverIP)/api/uploads/\(userLogin)"
         
         fetchData(from: profileDataURL) { data in
             if let data = data {

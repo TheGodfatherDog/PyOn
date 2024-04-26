@@ -90,7 +90,7 @@ struct RegistrationView: View {
     }
     
     func registerUser() {
-        guard let serverURL = URL(string: "http://127.0.0.1:80/api/register") else {
+        guard let serverURL = URL(string: "\(ServerConfig.serverIP)/api/register") else {
             alertMessage = "Ошибка: неверный URL"
             showAlert = true
             return

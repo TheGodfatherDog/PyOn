@@ -14,7 +14,7 @@ struct ContentView: View {
             createTab(view: ProfileView(login: login), label: "Профиль", icon: "person.crop.circle.fill", tag: 1)
             createTab(view: LessonsView(login: login), label: "Уроки", icon: "star.fill", tag: 2)
             createTab(view: TasksView(), label: "Задания", icon: "x.squareroot", tag: 3)
-            createTab(view: PyOnView(), label: "PyOn", icon: "apple.terminal", tag: 4)
+            createTab(view: InterpreterView(), label: "PyOn", icon: "apple.terminal", tag: 4)
         }
         .accentColor(.blue)
         .onAppear(perform: setupTabBarAppearance)

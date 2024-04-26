@@ -6,18 +6,15 @@ import SwiftUI
 
 @main
 struct PyOnApp: App {
-    @State var dataLoadingMode: DataLoadingMode = .local // Режим работы приложения .local и .server
     @State var login: String = ""
     
     var body: some Scene {
         WindowGroup {
-            // Заменяем ContentView на LoginScreenView
             FirstView()
         }
     }
 }
 
-enum DataLoadingMode {
-    case server // Режим загрузки с сервера
-    case local // Режим загрузки из локальных хранилищ
+struct ServerConfig {
+    static let serverIP = "http://127.0.0.1:80"
 }
