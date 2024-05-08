@@ -5,7 +5,6 @@
 //  Created by Андрей Храмцов on 18.04.2024.
 //
 import SwiftUI
-import WebKit
 
 // Структура урока
 struct Lesson: Identifiable, Codable {
@@ -20,9 +19,8 @@ struct LessonsView: View {
     var login: String
     @State private var lessons: [Lesson] = []
     @State private var selectedLesson: Lesson?
-    @State private var showModal: Bool = false
     @State private var isLoading: Bool = true
-
+    
     var body: some View {
         VStack {
             if isLoading {
@@ -32,8 +30,10 @@ struct LessonsView: View {
                     HStack {
                         Text(lesson.title)
                             .onTapGesture {
-                                selectedLesson = lesson
-                                showModal = true
+                                if selectedLesson == nil || selectedLesson?.id != lesson.id {
+                                    selectedLesson = lesson
+                                    showModal.toggle() // Здесь меняем состояние showModal
+                                }
                             }
                         Spacer()
                         Button(action: { toggleFavorite(for: lesson) }) {
@@ -44,8 +44,15 @@ struct LessonsView: View {
                 }
             }
         }
-        .onAppear(perform: loadLessons)
-        .sheet(isPresented: $showModal) {
+        .onAppear {
+            Task {
+                await loadLessons()
+            }
+        }
+        .sheet(isPresented: Binding(
+            get: { selectedLesson != nil },
+            set: { if !$0 { selectedLesson = nil } } // Закрываем модальное окно
+        )) {
             if let lesson = selectedLesson {
                 LessonContentView(lessonUrl: lesson.url)
             } else {
@@ -53,80 +60,69 @@ struct LessonsView: View {
             }
         }
     }
-
-    private func loadLessons() {
-        guard let url = URL(string: "\(ServerConfig.serverIP)/api/lessons/\(login)") else {
-            isLoading = false
-            print("Ошибка: неверный URL")
-            return
+    
+    @State private var showModal: Bool = false // Перемещаем эту переменную в конец
+    private func loadLessons() async {
+        isLoading = true
+        do {
+            lessons = try await fetchLessons(login: login)
+        } catch {
+            // Обработка ошибок
         }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            DispatchQueue.main.async {
-                isLoading = false
-                if let error = error {
-                    print("Ошибка при загрузке уроков: \(error.localizedDescription)")
-                    return
-                }
-
-                guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    print("Ошибка: неверный ответ от сервера.")
-                    return
-                }
-
-                if let data = data {
-                    do {
-                        lessons = try JSONDecoder().decode([Lesson].self, from: data)
-                        print("Уроки успешно загружены.")
-                    } catch {
-                        print("Ошибка при декодировании данных: \(error.localizedDescription)")
-                    }
-                } else {
-                    print("Нет данных")
-                }
-            }
-        }.resume()
+        isLoading = false
     }
-
+    
+    private func fetchLessons(login: String) async throws -> [Lesson] {
+        guard let url = URL(string: "\(ServerConfig.serverIP)/api/lessons/\(login)") else {
+            throw URLError(.badURL)
+        }
+        
+        let (data, response) = try await URLSession.shared.data(from: url)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
+        
+        return try JSONDecoder().decode([Lesson].self, from: data)
+    }
+    
     private func toggleFavorite(for lesson: Lesson) {
         guard let index = lessons.firstIndex(where: { $0.id == lesson.id }) else {
-            print("Ошибка: урок с id \(lesson.id) не найден.")
             return
         }
-
+        
         lessons[index].done.toggle()
-
-        guard let url = URL(string: "\(ServerConfig.serverIP)/api/update_favorite/\(login)") else {
-            print("Ошибка: неверный URL")
-            return
+        
+        Task {
+            try await updateFavorite(lessonID: lesson.id, login: login)
         }
-
+    }
+    
+    private func updateFavorite(lessonID: Int, login: String) async throws {
+        guard let url = URL(string: "\(ServerConfig.serverIP)/api/update_favorite/\(login)") else {
+            throw URLError(.badURL)
+        }
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        do {
-            request.httpBody = try JSONSerialization.data(withJSONObject: ["lesson_id": lesson.id], options: [])
-
-        } catch {
-            print("Ошибка при подготовке данных: \(error.localizedDescription)")
-            return
+        
+        let requestData = try JSONSerialization.data(withJSONObject: ["lesson_id": lessonID], options: [])
+        request.httpBody = requestData
+        
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
         }
-
-        URLSession.shared.dataTask(with: request) { _, _, error in
-            if let error = error {
-                print("Ошибка при обновлении избранного: \(error.localizedDescription)")
-            }
-        }.resume()
     }
 }
 
+// Вид для отображения содержимого урока
 struct LessonContentView: View {
     var lessonUrl: String
     @State private var lessonContent: String = ""
     @State private var isLoading: Bool = true
     @State private var error: String? = nil
-
+    
     var body: some View {
         VStack {
             if isLoading {
@@ -137,89 +133,41 @@ struct LessonContentView: View {
                 WebView(htmlString: lessonContent)
             }
         }
-        .onAppear(perform: loadLessonContent)
+        .onAppear {
+            Task {
+                await loadLessonContent()
+            }
+        }
     }
-
-    private func loadLessonContent() {
+    
+    private func loadLessonContent() async {
         guard let url = URL(string: "\(ServerConfig.serverIP)\(lessonUrl)") else {
             isLoading = false
             error = "Неверный URL"
             return
         }
-
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            DispatchQueue.main.async {
-
-
-                guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
-                    isLoading = false
-                    return
-                }
-
-                if let data = data {
-                    if let content = String(data: data, encoding: .utf8) {
-                        lessonContent = content
-                        isLoading = false
-                    } else {
-                        isLoading = false
-                    }
-                } else {
-                    isLoading = false
-                }
+        
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                isLoading = false
+                error = "Неверный ответ сервера"
+                return
             }
-        }.resume()
-    }
-}
-
-
-
-struct WebView: UIViewRepresentable {
-    let htmlString: String
-    var navigationDelegate: WKNavigationDelegate?
-
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView()
-        webView.navigationDelegate = context.coordinator
-        return webView
-    }
-
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-        if htmlString.starts(with: "http") {
-            if let url = URL(string: htmlString) {
-                uiView.load(URLRequest(url: url))
+            
+            if let content = String(data: data, encoding: .utf8) {
+                lessonContent = content
             } else {
-                print("Ошибка: неверный URL")
+                error = "Ошибка декодирования данных"
             }
-        } else {
-            uiView.loadHTMLString(htmlString, baseURL: nil)
+        } catch {
         }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-
-    class Coordinator: NSObject, WKNavigationDelegate {
-        var parent: WebView
-
-        init(_ parent: WebView) {
-            self.parent = parent
-        }
-
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("WebView: загрузка началась.")
-        }
-
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("WebView: загрузка завершена.")
-        }
-
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("WebView: ошибка загрузки - \(error.localizedDescription).")
-        }
+        
+        isLoading = false
     }
 }
 
+// Превью
 struct LessonsView_Previews: PreviewProvider {
     static var previews: LessonsView {
         LessonsView(login: "Test")

@@ -13,7 +13,7 @@ struct ContentView: View {
         TabView(selection: $selection) {
             createTab(view: ProfileView(login: login), label: "Профиль", icon: "person.crop.circle.fill", tag: 1)
             createTab(view: LessonsView(login: login), label: "Уроки", icon: "star.fill", tag: 2)
-            createTab(view: TasksView(), label: "Задания", icon: "x.squareroot", tag: 3)
+            //createTab(view: TasksView(), label: "Задания", icon: "x.squareroot", tag: 3)
             createTab(view: InterpreterView(), label: "PyOn", icon: "apple.terminal", tag: 4)
         }
         .accentColor(.blue)
