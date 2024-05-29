@@ -8,7 +8,6 @@ struct ContentView: View {
     @State private var selection = 1
     @Environment(\.colorScheme) var colorScheme
     let login: String
-
     var body: some View {
         TabView(selection: $selection) {
             createTab(view: ProfileView(login: login), label: "Профиль", icon: "person.crop.circle.fill", tag: 1)
@@ -19,7 +18,7 @@ struct ContentView: View {
         .accentColor(.blue)
         .onAppear(perform: setupTabBarAppearance)
     }
-
+    
     private func createTab<V: View>(view: V, label: String, icon: String, tag: Int) -> some View {
         view.tabItem {
             Image(systemName: icon)
@@ -27,20 +26,13 @@ struct ContentView: View {
         }
         .tag(tag)
     }
-
+    
     private func setupTabBarAppearance() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.backgroundColor = colorScheme == .dark ? UIColor.black : UIColor.systemBackground
         UITabBar.appearance().standardAppearance = tabBarAppearance
-        if #available(iOS 15.0, *) {
-            UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-        }
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
     }
 }
 
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView(login: "Test") // Передаем пример значения login
-    }
-}
+#Preview("ContentView") {ContentView(login: "Test")}

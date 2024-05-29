@@ -8,17 +8,10 @@ import WebKit
 @main
 struct PyOnApp: App {
     @State var login: String = ""
-    
-    var body: some Scene {
-        WindowGroup {
-            FirstView()
-        }
-    }
+    var body: some Scene {WindowGroup {FirstView()}}
 }
 
-struct ServerConfig {
-    static let serverIP = "http://127.0.0.1:80"
-}
+struct ServerConfig {static let serverIP = "http://172.20.10.12:80"} // АДРЕС сервера
 // Представитель WebView
 struct WebView: UIViewRepresentable {
     let htmlString: String
@@ -32,23 +25,14 @@ struct WebView: UIViewRepresentable {
     
     func updateUIView(_ uiView: WKWebView, context: Context) {
         if htmlString.starts(with: "http") {
-            if let url = URL(string: htmlString) {
-                uiView.load(URLRequest(url: url))
-            }
-        } else {
-            uiView.loadHTMLString(htmlString, baseURL: nil)
-        }
+            if let url = URL(string: htmlString) {uiView.load(URLRequest(url: url))}
+        } else {uiView.loadHTMLString(htmlString, baseURL: nil)}
     }
     
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+    func makeCoordinator() -> Coordinator {Coordinator(self)}
     
     class Coordinator: NSObject, WKNavigationDelegate {
         var parent: WebView
-        
-        init(_ parent: WebView) {
-            self.parent = parent
-        }
+        init(_ parent: WebView) {self.parent = parent}
     }
 }

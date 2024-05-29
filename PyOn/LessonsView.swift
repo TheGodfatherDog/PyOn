@@ -1,12 +1,8 @@
-//
 //  LessonsView.swift
 //  PyOn
-//
 //  Created by Андрей Храмцов on 18.04.2024.
-//
 import SwiftUI
 
-// Структура урока
 struct Lesson: Identifiable, Codable {
     var id: Int
     var title: String
@@ -14,7 +10,6 @@ struct Lesson: Identifiable, Codable {
     var url: String
 }
 
-// Основной вид
 struct LessonsView: View {
     var login: String
     @State private var lessons: [Lesson] = []
@@ -55,20 +50,14 @@ struct LessonsView: View {
         )) {
             if let lesson = selectedLesson {
                 LessonContentView(lessonUrl: lesson.url)
-            } else {
-                Text("Ошибка: выбранный урок не найден.")
-            }
+            } else {Text("Ошибка: выбранный урок не найден.")}
         }
     }
     
     @State private var showModal: Bool = false // Перемещаем эту переменную в конец
     private func loadLessons() async {
         isLoading = true
-        do {
-            lessons = try await fetchLessons(login: login)
-        } catch {
-            // Обработка ошибок
-        }
+        do {lessons = try await fetchLessons(login: login)} catch {}
         isLoading = false
     }
     
@@ -81,7 +70,6 @@ struct LessonsView: View {
         guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
             throw URLError(.badServerResponse)
         }
-        
         return try JSONDecoder().decode([Lesson].self, from: data)
     }
     
@@ -89,12 +77,8 @@ struct LessonsView: View {
         guard let index = lessons.firstIndex(where: { $0.id == lesson.id }) else {
             return
         }
-        
         lessons[index].done.toggle()
-        
-        Task {
-            try await updateFavorite(lessonID: lesson.id, login: login)
-        }
+        Task {try await updateFavorite(lessonID: lesson.id, login: login)}
     }
     
     private func updateFavorite(lessonID: Int, login: String) async throws {
@@ -129,15 +113,9 @@ struct LessonContentView: View {
                 Text("Загрузка содержимого урока...")
             } else if let error = error {
                 Text("Ошибка: \(error)")
-            } else {
-                WebView(htmlString: lessonContent)
-            }
+            } else {WebView(htmlString: lessonContent)}
         }
-        .onAppear {
-            Task {
-                await loadLessonContent()
-            }
-        }
+        .onAppear {Task {await loadLessonContent()}}
     }
     
     private func loadLessonContent() async {
@@ -157,19 +135,11 @@ struct LessonContentView: View {
             
             if let content = String(data: data, encoding: .utf8) {
                 lessonContent = content
-            } else {
-                error = "Ошибка декодирования данных"
-            }
-        } catch {
-        }
+            } else {error = "Ошибка декодирования данных"}
+        } catch {}
         
         isLoading = false
     }
 }
 
-// Превью
-struct LessonsView_Previews: PreviewProvider {
-    static var previews: LessonsView {
-        LessonsView(login: "Test")
-    }
-}
+#Preview("LessonsView") {LessonsView(login: "Test")}

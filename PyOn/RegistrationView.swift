@@ -26,7 +26,6 @@ struct RegistrationView: View {
         NavigationView {
             ZStack {
                 Color(colorScheme == .dark ? .black : .white).edgesIgnoringSafeArea(.all)
-
                 VStack {
                     Form {
                         Section(header: Text("Введите необходимую информацию:")) {
@@ -43,13 +42,9 @@ struct RegistrationView: View {
                     registerButton
                 }
                 .navigationTitle("Регистрация")
-                .sheet(isPresented: $showingImagePicker) {
-                    ImagePicker(image: self.$profileImage)
-                }
+                .sheet(isPresented: $showingImagePicker) {ImagePicker(image: self.$profileImage)}
 
-                if isRegistered {
-                    FirstView() // Переход к следующему экрану
-                }
+                if isRegistered {FirstView()}
             }
         }
         .alert(isPresented: $showAlert) {
@@ -81,11 +76,7 @@ struct RegistrationView: View {
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
             }
-            Button(action: {
-                self.showingImagePicker = true
-            }) {
-                Text("Выбрать")
-            }
+            Button(action: {self.showingImagePicker = true}) {Text("Выбрать")}
         }
     }
     
@@ -116,8 +107,7 @@ struct RegistrationView: View {
             "firstName": firstName,
             "lastName": lastName,
             "school": school,
-            "grade": grade
-        ]
+            "grade": grade ]
         
         var body = Data()
         appendParameters(&body, parameters, boundary)
@@ -183,23 +173,14 @@ struct ImagePicker: UIViewControllerRepresentable {
     
     class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
         var parent: ImagePicker
-        
-        init(_ parent: ImagePicker) {
-            self.parent = parent
-        }
-        
+        init(_ parent: ImagePicker) {self.parent = parent}
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {
-                parent.image = uiImage
-            }
-            
+            if let uiImage = info[.originalImage] as? UIImage {parent.image = uiImage}
             parent.presentationMode.wrappedValue.dismiss()
         }
     }
     
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
+    func makeCoordinator() -> Coordinator {Coordinator(self)}
     
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
@@ -210,16 +191,6 @@ struct ImagePicker: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 }
 
-extension Data {
-    mutating func append(_ string: String) {
-        if let data = string.data(using: .utf8) {
-            append(data)
-        }
-    }
-}
+extension Data {mutating func append(_ string: String) {if let data = string.data(using: .utf8) {append(data)}}}
 
-struct RegistrationView_Previews: PreviewProvider {
-    static var previews: some View {
-        RegistrationView()
-    }
-}
+#Preview("RegView") {RegistrationView()}

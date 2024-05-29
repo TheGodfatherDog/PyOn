@@ -51,25 +51,37 @@ struct InterpreterView: View {
     @State private var outputText: String = ""
 
     var body: some View {
-        VStack {
-            PythonEditorView(codeText: $codeText)
-                .frame(minHeight: 200, maxHeight: 500)
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    hideKeyboard()
+                }
+
+            VStack {
+                PythonEditorView(codeText: $codeText)
+                    .frame(minHeight: 200, maxHeight: 500)
+                    .border(colorScheme == .dark ? Color.white : Color.black, width: 1)
+                    .padding()
+                
+                Button("Запустить") {
+                    runCodeOnServer(codeText)
+                }
+                .padding()
+                
+                ScrollView {
+                    Text(outputText)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                }
                 .border(colorScheme == .dark ? Color.white : Color.black, width: 1)
                 .padding()
-            
-            Button("Запустить") {
-                runCodeOnServer(codeText)
             }
-            .padding()
-            
-            ScrollView {
-                Text(outputText)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-            }
-            .border(colorScheme == .dark ? Color.white : Color.black, width: 1)
-            .padding()
         }
+    }
+
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 
     func runCodeOnServer(_ code: String) {
@@ -116,8 +128,6 @@ struct InterpreterView: View {
     }
 }
 
-struct PyOnView_Previews: PreviewProvider {
-    static var previews: InterpreterView {
-        InterpreterView()
-    }
+#Preview("InterpreterView") {
+    InterpreterView()
 }
