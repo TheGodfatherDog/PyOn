@@ -70,8 +70,8 @@ struct RegistrationView: View {
         HStack {
             Text("Фото профиля")
             Spacer()
-            profileImage.map {
-                Image(uiImage: $0)
+            if let profileImage = profileImage {
+                Image(uiImage: profileImage)
                     .resizable()
                     .frame(width: 60, height: 60)
                     .clipShape(Circle())
@@ -140,7 +140,7 @@ struct RegistrationView: View {
                     alertMessage = "Ошибка: логин уже существует"
                     showAlert = true
                 default:
-                    alertMessage = "Ошибка: неизвестная  ошибка"
+                    alertMessage = "Ошибка: неизвестная ошибка"
                     showAlert = true
                 }
             }
@@ -175,7 +175,9 @@ struct ImagePicker: UIViewControllerRepresentable {
         var parent: ImagePicker
         init(_ parent: ImagePicker) {self.parent = parent}
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            if let uiImage = info[.originalImage] as? UIImage {parent.image = uiImage}
+            if let editedImage = info[.editedImage] as? UIImage { // Use edited image if available
+                parent.image = editedImage.circleMasked // Apply circle masking
+            }
             parent.presentationMode.wrappedValue.dismiss()
         }
     }
@@ -185,12 +187,39 @@ struct ImagePicker: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIImagePickerController {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
+        picker.allowsEditing = true // Enable editing mode
+        picker.sourceType = .photoLibrary // Choose from library
+        picker.mediaTypes = ["public.image"] // Images only
+        picker.modalPresentationStyle = .fullScreen
         return picker
     }
     
     func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 }
 
-extension Data {mutating func append(_ string: String) {if let data = string.data(using: .utf8) {append(data)}}}
+extension Data {
+    mutating func append(_ string: String) {
+        if let data = string
+            .data(using: .utf8) {
+                        append(data)
+                    }
+                }
+            }
+
+            extension UIImage {
+                var circleMasked: UIImage? {
+                    let imageView = UIImageView(image: self)
+                    imageView.contentMode = .scaleAspectFill
+                    imageView.frame = CGRect(origin: .zero, size: CGSize(width: min(size.width, size.height), height: min(size.width, size.height)))
+                    imageView.layer.cornerRadius = min(size.width, size.height) / 2
+                    imageView.layer.masksToBounds = true
+                    UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, false, scale)
+                    guard let context = UIGraphicsGetCurrentContext() else { return nil }
+                    imageView.layer.render(in: context)
+                    let result = UIGraphicsGetImageFromCurrentImageContext()
+                    UIGraphicsEndImageContext()
+                    return result
+                }
+            }
 
 #Preview("RegView") {RegistrationView()}

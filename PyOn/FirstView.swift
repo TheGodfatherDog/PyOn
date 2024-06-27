@@ -169,6 +169,8 @@ class LoginViewModel: ObservableObject {
                 switch httpResponse.statusCode {
                 case 200:
                     self.isLoggedIn = true // Успешный вход
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil) // Закрытие клавиатуры
+
                 case 401:
                     self.loginMessage = "Ошибка: Неверные учетные данные" // Ошибка при неверных данных
                 default:

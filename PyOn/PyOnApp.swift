@@ -11,7 +11,9 @@ struct PyOnApp: App {
     var body: some Scene {WindowGroup {FirstView()}}
 }
 
-struct ServerConfig {static let serverIP = "http://172.20.10.12:80"} // АДРЕС сервера
+//struct ServerConfig {static let serverIP = "http://172.20.10.12:80"} // АДРЕС сервера раздача с айфона
+struct ServerConfig {static let serverIP = "http://127.0.0.1:80"} // АДРЕС сервера локаль
+
 // Представитель WebView
 struct WebView: UIViewRepresentable {
     let htmlString: String
